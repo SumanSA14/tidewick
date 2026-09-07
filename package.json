@@ -1,0 +1,44 @@
+{
+  "name": "tidewick",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "A local-first workspace that grows into a living island.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "tauri": "tauri",
+    "shaders": "node tools/checkShaders.mjs",
+    "check": "pnpm typecheck && pnpm shaders && pnpm names && pnpm test",
+    "names": "node tools/checkNames.mjs"
+  },
+  "dependencies": {
+    "dexie": "^4.4.5",
+    "immer": "^11.1.18",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "three": "^0.185.1",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.11.4",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "@types/node": "^26.4.1",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@types/three": "^0.185.4",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@webgpu/types": "^0.1.72",
+    "jsdom": "^30.0.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.2",
+    "vitest": "^5.0.0"
+  }
+}

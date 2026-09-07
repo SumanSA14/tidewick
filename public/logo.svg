@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!--
+    Tidewick: a terraced isle at dusk, a lantern lit on its summit, the tide
+    below. Flat toon colour, one ink, the same palette as the isle itself.
+    Each terrace is a riser silhouette (sides down, the front arc of its foot)
+    with the top face laid over it, so no rim shows through a face.
+  -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#27506a"/>
+      <stop offset="0.5" stop-color="#173a4e"/>
+      <stop offset="1" stop-color="#0d2434"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2f96a3"/>
+      <stop offset="1" stop-color="#155060"/>
+    </linearGradient>
+    <linearGradient id="window" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff0c4"/>
+      <stop offset="0.55" stop-color="#ffcc66"/>
+      <stop offset="1" stop-color="#ff9b3d"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffd98a" stop-opacity="0.9"/>
+      <stop offset="0.3" stop-color="#ffb956" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#ffb956" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="pool" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffe2a0" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#ffe2a0" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <clipPath id="tile"><rect x="56" y="56" width="912" height="912" rx="224"/></clipPath>
+  </defs>
+
+  <!-- the tile -->
+  <rect x="56" y="56" width="912" height="912" rx="224" fill="url(#sky)"/>
+
+  <g clip-path="url(#tile)">
+    <!-- stars -->
+    <g fill="#eaf4ff">
+      <circle cx="214" cy="212" r="5" opacity="0.9"/>
+      <circle cx="318" cy="150" r="3.5" opacity="0.7"/>
+      <circle cx="668" cy="132" r="3.5" opacity="0.75"/>
+      <circle cx="782" cy="196" r="4.5" opacity="0.9"/>
+      <circle cx="868" cy="300" r="3" opacity="0.6"/>
+      <circle cx="150" cy="352" r="3" opacity="0.6"/>
+      <circle cx="560" cy="188" r="2.5" opacity="0.6"/>
+    </g>
+
+    <!-- lantern light on the sky -->
+    <circle cx="512" cy="430" r="300" fill="url(#glow)"/>
+
+    <!-- the isle, bottom to top: riser silhouette, then the top face -->
+    <g stroke="#0f1f28" stroke-width="11" stroke-linejoin="round">
+      <!-- sand -->
+      <path d="M196 700 L196 760 A316 88 0 0 0 828 760 L828 700 Z" fill="#c8b07c"/>
+      <ellipse cx="512" cy="700" rx="316" ry="88" fill="#ead9ab"/>
+      <!-- terrace 1 -->
+      <path d="M258 628 L258 700 A254 70 0 0 0 766 700 L766 628 Z" fill="#3c7a33"/>
+      <ellipse cx="512" cy="628" rx="254" ry="70" fill="#58a444"/>
+      <!-- terrace 2 -->
+      <path d="M320 566 L320 628 A192 53 0 0 0 704 628 L704 566 Z" fill="#3f8236"/>
+      <ellipse cx="512" cy="566" rx="192" ry="53" fill="#63b04c"/>
+      <!-- terrace 3 -->
+      <path d="M386 512 L386 566 A126 35 0 0 0 638 566 L638 512 Z" fill="#458b3b"/>
+      <ellipse cx="512" cy="512" rx="126" ry="35" fill="#74bf58"/>
+    </g>
+    <!-- the light pooling on the summit -->
+    <ellipse cx="512" cy="512" rx="118" ry="31" fill="url(#pool)"/>
+
+    <!-- sea, over the foot of the isle -->
+    <path d="M40 740 C 180 712, 330 768, 512 740 S 840 712, 984 740 L 984 990 L 40 990 Z" fill="url(#sea)"/>
+    <!-- the lantern's reflection -->
+    <ellipse cx="512" cy="790" rx="150" ry="22" fill="#ffc266" opacity="0.32" filter="url(#soft)"/>
+    <!-- foam and swell -->
+    <path d="M40 740 C 180 712, 330 768, 512 740 S 840 712, 984 740" fill="none" stroke="#dbf4f5" stroke-width="11" stroke-linecap="round" opacity="0.95"/>
+    <path d="M40 826 C 200 798, 350 852, 512 826 S 830 798, 984 826" fill="none" stroke="#8fd8dc" stroke-width="9" stroke-linecap="round" opacity="0.5"/>
+    <path d="M120 906 C 260 880, 380 932, 512 906 S 780 880, 900 906" fill="none" stroke="#8fd8dc" stroke-width="8" stroke-linecap="round" opacity="0.3"/>
+
+    <!-- the lantern -->
+    <g stroke="#0f1f28" stroke-width="10" stroke-linejoin="round" stroke-linecap="round">
+      <line x1="512" y1="470" x2="512" y2="512"/>
+      <circle cx="512" cy="352" r="12" fill="none"/>
+      <rect x="488" y="360" width="48" height="16" rx="6" fill="#2b4250"/>
+      <rect x="470" y="374" width="84" height="96" rx="18" fill="#2b4250"/>
+      <rect x="486" y="388" width="52" height="68" rx="12" fill="url(#window)" stroke="none"/>
+      <!-- flame -->
+      <path d="M512 400 C 526 416, 528 430, 512 444 C 496 430, 498 416, 512 400 Z" fill="#fff6d8" stroke="none"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,979 @@
+/*
+ * Databases and views.
+ *
+ * Same discipline as the editor: calm, dense, fast. Colour appears only where
+ * it carries information - a select chip, an active view tab - and never as
+ * decoration. There is no red token in the palette, so a filter that excludes
+ * everything looks quiet rather than alarming.
+ */
+
+.db {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.db__head {
+  padding: clamp(1.5rem, 4vh, 2.5rem) clamp(1rem, 3vw, 2rem) 0.4rem;
+}
+
+.db__name {
+  width: 100%;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  padding: 0;
+}
+
+.db__name:focus { outline: none; }
+.db__name:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+
+.db__missing,
+.board__hint,
+.calendar__hint {
+  margin: 2.5rem clamp(1rem, 3vw, 2rem);
+  color: var(--muted);
+  font-size: 0.88rem;
+  max-width: 34rem;
+}
+
+/* --- view tabs and tools --- */
+
+.db__views {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0 clamp(1rem, 3vw, 2rem);
+  border-bottom: 1px solid var(--rule);
+  flex-wrap: wrap;
+}
+
+.db__tab {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+}
+
+.db__tab.is-active {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+.db__tab:hover { color: var(--ink); }
+
+.db__addView { position: relative; }
+
+.db__addView summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 0.35rem 0.55rem;
+  color: var(--faint);
+  font-size: 0.9rem;
+  border-radius: 6px;
+}
+
+.db__addView summary::-webkit-details-marker { display: none; }
+.db__addView summary:hover { background: color-mix(in srgb, var(--ink) 7%, transparent); }
+
+.db__addView ul {
+  position: absolute;
+  z-index: 30;
+  top: 100%;
+  left: 0;
+  min-width: 9rem;
+  list-style: none;
+  margin: 0.2rem 0 0;
+  padding: 0.25rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 9px;
+  box-shadow: 0 10px 28px rgba(10, 16, 22, 0.16);
+}
+
+.db__addView li button {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.db__addView li button:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+
+.db__tools { margin-left: auto; display: flex; gap: 0.1rem; }
+
+.db__tool {
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.78rem;
+  padding: 0.4rem 0.55rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.db__tool:hover { background: color-mix(in srgb, var(--ink) 7%, transparent); color: var(--ink); }
+.db__tool.is-on { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+
+.db__body { flex: 1; min-height: 0; overflow: hidden; display: flex; }
+.db__body > * { flex: 1; min-width: 0; }
+
+/* --- panels --- */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.7rem clamp(1rem, 3vw, 2rem);
+  border-bottom: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--ink) 3%, transparent);
+}
+
+.panel__row { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+.panel__row label { display: flex; align-items: center; gap: 0.4rem; }
+
+.panel__label {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.panel select,
+.panel__value,
+.panel__rename {
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 0.28rem 0.4rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--paper);
+  color: inherit;
+}
+
+.panel__rename { border-color: transparent; background: none; min-width: 8rem; }
+.panel__rename:hover { border-color: var(--rule); }
+
+.panel__type {
+  font-size: 0.7rem;
+  color: var(--faint);
+  margin-left: auto;
+}
+
+.panel__toggle { display: flex; align-items: center; gap: 0.4rem; }
+.panel__toggle input { accent-color: var(--accent); }
+
+.panel__add,
+.panel__remove {
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.78rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.panel__add { color: var(--accent); }
+.panel__add:hover,
+.panel__remove:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+.panel__cancel { color: var(--muted); }
+
+/* --- table --- */
+
+.table { display: flex; flex-direction: column; min-height: 0; }
+
+.table__head {
+  display: flex;
+  border-bottom: 1px solid var(--rule);
+  padding-left: clamp(1rem, 3vw, 2rem);
+  flex: 0 0 auto;
+}
+
+.table__th {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  border-right: 1px solid var(--rule);
+  min-width: 0;
+}
+
+.table__sort {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  width: 100%;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.75rem;
+  padding: 0.45rem 0.5rem;
+  cursor: pointer;
+  text-align: left;
+  min-width: 0;
+}
+
+.table__sort:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 5%, transparent); }
+.table__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.table__type { color: var(--faint); font-size: 0.7rem; flex: 0 0 auto; }
+.table__arrow { margin-left: auto; color: var(--accent); }
+
+.table__grip {
+  position: absolute;
+  right: -3px;
+  top: 0;
+  bottom: 0;
+  width: 7px;
+  cursor: col-resize;
+}
+
+.table__grip:hover { background: color-mix(in srgb, var(--accent) 40%, transparent); }
+
+.table__body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding-left: clamp(1rem, 3vw, 2rem);
+}
+
+.table__row {
+  display: flex;
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 7%, transparent);
+  height: 34px;
+  align-items: stretch;
+}
+
+.table__row:hover { background: color-mix(in srgb, var(--ink) 3%, transparent); }
+
+.table__cell {
+  position: relative;
+  flex: 0 0 auto;
+  border-right: 1px solid color-mix(in srgb, var(--ink) 6%, transparent);
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.table__open {
+  position: absolute;
+  right: 0.25rem;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.68rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 5px;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.table__row:hover .table__open,
+.table__open:focus-visible { opacity: 1; }
+
+.table__rowActions { display: flex; align-items: center; padding: 0 0.3rem; }
+
+.table__delete {
+  border: 0;
+  background: none;
+  color: var(--faint);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  padding: 0.15rem 0.3rem;
+  border-radius: 5px;
+}
+
+.table__row:hover .table__delete,
+.table__delete:focus-visible { opacity: 1; }
+.table__delete:hover { background: color-mix(in srgb, var(--ink) 9%, transparent); color: var(--ink); }
+
+.table__add,
+.list__add,
+.gallery__add,
+.board__add {
+  border: 0;
+  background: none;
+  color: var(--faint);
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 0.5rem 0.6rem;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  border-radius: 6px;
+}
+
+.table__add:hover,
+.list__add:hover,
+.gallery__add:hover,
+.board__add:hover { background: color-mix(in srgb, var(--ink) 6%, transparent); color: var(--ink); }
+
+.table__foot {
+  flex: 0 0 auto;
+  padding: 0.4rem clamp(1rem, 3vw, 2rem);
+  border-top: 1px solid var(--rule);
+  font-size: 0.72rem;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- cells --- */
+
+.cell {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 0.25rem 0.45rem;
+  text-align: left;
+  cursor: text;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.cell.is-locked { cursor: default; color: var(--muted); }
+.cell:hover:not(.is-locked) { background: color-mix(in srgb, var(--ink) 4%, transparent); }
+.cell:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+.cell--checkbox { justify-content: flex-start; cursor: pointer; }
+.cell--checkbox input { accent-color: var(--accent); cursor: pointer; }
+.cell__number { font-variant-numeric: tabular-nums; }
+.cell__empty { display: block; min-height: 1em; }
+.cell__computed { color: var(--muted); }
+.cell__pending { font-style: italic; opacity: 0.6; }
+.cell__link { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+
+.cell--card {
+  white-space: normal;
+  padding: 0.1rem 0;
+}
+
+.cell__input {
+  width: 100%;
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 0.25rem 0.4rem;
+  border: 1px solid var(--accent);
+  border-radius: 5px;
+  background: var(--paper);
+  color: inherit;
+}
+
+.cell__input:focus { outline: none; }
+
+/* --- chips --- */
+
+.chips { display: flex; gap: 0.2rem; flex-wrap: wrap; min-width: 0; }
+
+.chip {
+  display: inline-block;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  padding: 0.05rem 0.42rem;
+  border-radius: 20px;
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--ink) 9%, transparent);
+  color: var(--ink);
+}
+
+.chip--slate  { background: color-mix(in srgb, #6b7a88 26%, transparent); }
+.chip--teal   { background: color-mix(in srgb, #3f8fa8 26%, transparent); }
+.chip--moss   { background: color-mix(in srgb, #5f9e6a 26%, transparent); }
+.chip--sand   { background: color-mix(in srgb, #c9b184 30%, transparent); }
+.chip--amber  { background: color-mix(in srgb, #c99a4a 28%, transparent); }
+.chip--clay   { background: color-mix(in srgb, #b0796a 26%, transparent); }
+.chip--lilac  { background: color-mix(in srgb, #8a7fa8 26%, transparent); }
+.chip--sky    { background: color-mix(in srgb, #6fa8d8 26%, transparent); }
+.chip--relation { background: color-mix(in srgb, var(--accent) 16%, transparent); }
+
+/* --- pickers --- */
+
+.picker {
+  position: absolute;
+  z-index: 35;
+  min-width: 13rem;
+  max-height: 17rem;
+  overflow-y: auto;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 9px;
+  box-shadow: 0 12px 30px rgba(10, 16, 22, 0.18);
+  padding: 0.35rem;
+}
+
+.picker--empty { position: static; color: var(--muted); font-size: 0.78rem; }
+.picker--date { display: flex; flex-direction: column; gap: 0.3rem; }
+
+.picker__search,
+.picker__date {
+  width: 100%;
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 0.3rem 0.4rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--paper);
+  color: inherit;
+}
+
+.picker__list { list-style: none; margin: 0.3rem 0 0; padding: 0; }
+
+.picker__item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 0.28rem 0.4rem;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.picker__item:hover { background: color-mix(in srgb, var(--ink) 7%, transparent); }
+.picker__item.is-selected { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.picker__create,
+.picker__clear { color: var(--muted); }
+.picker__none { padding: 0.4rem; font-size: 0.78rem; color: var(--faint); }
+.picker__file { display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; font-size: 0.78rem; padding: 0.2rem 0.3rem; }
+.picker__row { display: flex; gap: 0.3rem; align-items: center; }
+
+.picker__done,
+.picker__small {
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.4rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.picker__small { color: var(--muted); }
+.picker__done:hover,
+.picker__small:hover { background: color-mix(in srgb, var(--ink) 7%, transparent); }
+
+/* --- board --- */
+
+.board {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  overflow-x: auto;
+  padding: 0.9rem clamp(1rem, 3vw, 2rem) 2rem;
+}
+
+.board__column {
+  flex: 0 0 15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  border-radius: 10px;
+  padding: 0.4rem;
+  background: color-mix(in srgb, var(--ink) 3.5%, transparent);
+  transition: background 130ms ease;
+}
+
+.board__column.is-over { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.board__column.is-collapsed { flex: 0 0 auto; }
+
+.board__head { display: flex; align-items: center; }
+
+.board__collapse {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  padding: 0.2rem 0.15rem;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.board__count { font-size: 0.72rem; color: var(--faint); font-variant-numeric: tabular-nums; }
+.board__cards { display: flex; flex-direction: column; gap: 0.35rem; min-height: 1.5rem; }
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 0.5rem 0.55rem;
+  cursor: grab;
+}
+
+.card.is-dragging { opacity: 0.45; }
+
+.card__title {
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.84rem;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+  line-height: 1.35;
+}
+
+.card__props { display: flex; flex-direction: column; gap: 0.1rem; }
+
+.card__move select {
+  font: inherit;
+  font-size: 0.7rem;
+  color: var(--faint);
+  border: 1px solid transparent;
+  background: none;
+  border-radius: 5px;
+  padding: 0.05rem 0.15rem;
+  max-width: 100%;
+}
+
+.card__move select:hover,
+.card__move select:focus { border-color: var(--rule); color: var(--ink); }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* --- list --- */
+
+.list { overflow-y: auto; padding: 0.5rem clamp(1rem, 3vw, 2rem) 2rem; }
+
+.list__row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.35rem 0.2rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 6%, transparent);
+}
+
+.list__title {
+  flex: 1;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.88rem;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list__extras { display: flex; gap: 0.7rem; flex: 0 0 auto; color: var(--muted); }
+
+/* --- gallery --- */
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.7rem;
+  overflow-y: auto;
+  padding: 0.9rem clamp(1rem, 3vw, 2rem) 2rem;
+  align-content: start;
+}
+
+.gallery__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 0.4rem;
+  background: var(--paper);
+}
+
+.gallery__cover {
+  border: 0;
+  padding: 0;
+  border-radius: 7px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  cursor: pointer;
+}
+
+.gallery__cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gallery__blank { display: block; width: 100%; height: 100%; }
+
+.gallery__title {
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.84rem;
+  text-align: left;
+  padding: 0 0.1rem;
+  cursor: pointer;
+}
+
+.gallery__fields { display: flex; flex-direction: column; gap: 0.1rem; padding: 0 0.1rem; }
+.gallery__add { grid-column: 1 / -1; }
+
+/* --- calendar --- */
+
+.calendar { display: flex; flex-direction: column; min-height: 0; padding: 0 clamp(1rem, 3vw, 2rem) 1rem; }
+
+.calendar__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0;
+}
+
+.calendar__bar button {
+  border: 1px solid var(--rule);
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.calendar__today { margin-left: auto; }
+
+.calendar__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-size: 0.68rem;
+  color: var(--faint);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding-bottom: 0.25rem;
+}
+
+.calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: minmax(4.5rem, 1fr);
+  border-top: 1px solid var(--rule);
+  border-left: 1px solid var(--rule);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.calendar__day {
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: 0.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  min-width: 0;
+}
+
+.calendar__day.is-outside { background: color-mix(in srgb, var(--ink) 2.5%, transparent); }
+.calendar__day.is-today .calendar__date {
+  background: var(--accent);
+  color: var(--paper);
+  border-radius: 50%;
+}
+
+.calendar__date {
+  font-size: 0.7rem;
+  color: var(--muted);
+  width: 1.35rem;
+  height: 1.35rem;
+  display: grid;
+  place-items: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.calendar__event {
+  border: 0;
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  color: inherit;
+  font: inherit;
+  font-size: 0.7rem;
+  text-align: left;
+  padding: 0.1rem 0.3rem;
+  border-radius: 5px;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .board__column { transition: none; }
+}
+
+/* --- timeline --- */
+
+.timeline { display: flex; flex-direction: column; min-height: 0; }
+
+.timeline__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem clamp(1rem, 3vw, 2rem);
+  border-bottom: 1px solid var(--rule);
+}
+
+.timeline__zoomLabel {
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-right: 0.3rem;
+}
+
+.timeline__zoom {
+  border: 1px solid transparent;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.76rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.timeline__zoom.is-active {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.timeline__count { margin-left: auto; font-size: 0.72rem; color: var(--faint); }
+
+.timeline__body { display: flex; flex: 1; min-height: 0; overflow: auto; }
+
+.timeline__labels {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  flex: 0 0 auto;
+  background: var(--paper);
+  border-right: 1px solid var(--rule);
+}
+
+.timeline__label {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 6%, transparent);
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.78rem;
+  text-align: left;
+  padding: 0 0.6rem;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.timeline__label:hover { background: color-mix(in srgb, var(--ink) 5%, transparent); }
+
+.timeline__canvas { position: relative; flex: 0 0 auto; }
+
+.timeline__month {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+  pointer-events: none;
+}
+
+.timeline__month span {
+  position: sticky;
+  top: 0;
+  display: inline-block;
+  padding: 0.1rem 0.3rem;
+  font-size: 0.64rem;
+  color: var(--faint);
+  white-space: nowrap;
+}
+
+/* Today, drawn in the accent - the only marker that matters at a glance, and
+   the same "waterline" the island uses. */
+.timeline__today {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent);
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.timeline__arrows { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+.timeline__arrow { fill: none; stroke: color-mix(in srgb, var(--ink) 32%, transparent); stroke-width: 1.25; }
+.timeline__arrowHead { fill: color-mix(in srgb, var(--ink) 32%, transparent); }
+
+.timeline__task {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--accent) 34%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  cursor: grab;
+  overflow: hidden;
+  min-width: 8px;
+}
+
+.timeline__task.is-dragging { cursor: grabbing; filter: brightness(1.1); }
+
+/* Past work is quieter, never alarming. Urgency in this product is proximity
+   to water, and that reading lives on the island, not in a colour here. */
+.timeline__task.is-past {
+  background: color-mix(in srgb, var(--ink) 16%, transparent);
+  border-color: color-mix(in srgb, var(--ink) 26%, transparent);
+}
+
+.timeline__task:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.timeline__taskLabel {
+  flex: 1;
+  font-size: 0.72rem;
+  padding: 0 0.35rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.timeline__grip { flex: 0 0 5px; align-self: stretch; cursor: col-resize; }
+.timeline__grip:hover { background: color-mix(in srgb, var(--accent) 60%, transparent); }
+
+.timeline__foot {
+  padding: 0.35rem clamp(1rem, 3vw, 2rem);
+  border-top: 1px solid var(--rule);
+  font-size: 0.7rem;
+  color: var(--faint);
+}
+
+/* --- formula editor --- */
+
+.formula {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.7rem clamp(1rem, 3vw, 2rem);
+  border-bottom: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--ink) 3%, transparent);
+}
+
+.formula__label {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.formula__input {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--rule);
+  border-radius: 7px;
+  background: var(--paper);
+  color: inherit;
+  resize: vertical;
+}
+
+.formula__input:focus { outline: none; border-color: var(--accent); }
+/* Amber, not red. There is no red in this product, including here. */
+.formula__input.is-invalid { border-color: #c99a4a; }
+
+.formula__status { margin: 0; font-size: 0.76rem; color: var(--muted); }
+.formula__status.is-invalid { color: #b8804a; }
+
+.formula__help summary {
+  font-size: 0.74rem;
+  color: var(--faint);
+  cursor: pointer;
+}
+
+.formula__functions,
+.formula__hint {
+  margin: 0.3rem 0 0;
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.formula__functions {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.7rem;
+}
+
+.formula__hint code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  border-radius: 4px;
+  padding: 0.05em 0.28em;
+}
+
+.formula__actions { display: flex; gap: 0.4rem; }
+
+.panel__type--action {
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 0.7rem;
+  cursor: pointer;
+  margin-left: auto;
+  padding: 0.15rem 0.35rem;
+  border-radius: 5px;
+}
+
+.panel__type--action:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }

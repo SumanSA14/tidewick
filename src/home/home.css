@@ -1,0 +1,377 @@
+/*
+ * The home page.
+ *
+ * Everything here sits over a live 3D scene, which constrains the design more
+ * than it first appears: the background is moving, its brightness changes with
+ * the time of day, and it is never the same twice. So contrast cannot come from
+ * the colours - it has to come from a scrim, and every piece of text needs to
+ * stay legible over both a bright noon beach and a near-black midnight sea.
+ *
+ * The accent is injected as --accent from the season palette, warmed toward the
+ * current sky. It is the one colour that changes, and it changes for a reason.
+ */
+
+.home {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  --ink: #f4f1ea;
+  --ink-dim: rgba(244, 241, 234, 0.62);
+  --ink-faint: rgba(244, 241, 234, 0.38);
+}
+
+/*
+ * Directional scrim rather than a flat overlay. The island stays fully visible
+ * on the right, which is the whole point of rendering it live; the left third
+ * darkens just enough to carry text at any time of day.
+ */
+.home__scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      100deg,
+      rgba(10, 17, 24, 0.86) 0%,
+      rgba(10, 17, 24, 0.7) 24%,
+      rgba(10, 17, 24, 0.34) 46%,
+      rgba(10, 17, 24, 0) 70%
+    ),
+    radial-gradient(135% 105% at 46% 48%, transparent 62%, rgba(8, 14, 20, 0.22) 100%);
+}
+
+.home__panel {
+  position: relative;
+  pointer-events: auto;
+  width: min(30rem, 46vw);
+  margin-left: clamp(2rem, 6vw, 6rem);
+  color: var(--ink);
+  animation: home-rise 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes home-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+.home__wordmark {
+  margin: 0 0 2.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* The mark: the isle and its lantern, at wordmark size. */
+.home__mark {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
+}
+
+.home__greeting {
+  margin: 0 0 0.5rem;
+  font-size: 0.92rem;
+  color: var(--ink-dim);
+}
+
+.home__clock {
+  margin-left: 0.5rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-faint);
+}
+
+.home__title {
+  margin: 0 0 0.9rem;
+  font-size: clamp(2.1rem, 4.2vw, 3.1rem);
+  font-weight: 300;
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+  /* A soft shadow rather than a heavier scrim: keeps the island bright. */
+  text-shadow: 0 2px 18px rgba(6, 12, 18, 0.55);
+}
+
+.home__lede {
+  margin: 0 0 2rem;
+  max-width: 27rem;
+  font-size: 0.94rem;
+  line-height: 1.62;
+  color: var(--ink-dim);
+}
+
+/* --- form --- */
+
+.home__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.home__label {
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding: 0;
+}
+
+.home__input {
+  width: 100%;
+  padding: 0.72rem 0.9rem;
+  margin-bottom: 0.9rem;
+  font: inherit;
+  font-size: 1.05rem;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 9px;
+  transition: border-color 140ms ease, background 140ms ease;
+}
+
+.home__input::placeholder {
+  color: rgba(244, 241, 234, 0.3);
+}
+
+.home__input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.11);
+}
+
+.home__input:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 34%, transparent);
+}
+
+/* --- swatches --- */
+
+.swatches {
+  border: 0;
+  margin: 0 0 0.9rem;
+  padding: 0;
+}
+
+.swatches__row {
+  display: flex;
+  gap: 0.45rem;
+  margin-top: 0.42rem;
+}
+
+.swatch {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.22) inset;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 140ms ease, border-color 140ms ease;
+}
+
+.swatch:hover {
+  transform: translateY(-2px);
+}
+
+.swatch[data-selected] {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+
+.swatch:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* --- stats --- */
+
+.stats {
+  /* Four across, always: the ring widened the Season item and flex-wrap
+     folded the row into an uneven two-by-two. */
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  justify-content: start;
+  gap: 0 2.1rem;
+  margin: 0 0 2.2rem;
+  padding: 1rem 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.13);
+}
+
+@media (max-width: 720px) {
+  .stats { grid-template-columns: repeat(2, auto); row-gap: 0.9rem; }
+}
+
+.stats__item {
+  min-width: 4.2rem;
+}
+
+.stats__label {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.stats__value {
+  margin: 0.24rem 0 0;
+  font-size: 1.32rem;
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.stats__sub {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: 0.7rem;
+  color: var(--ink-faint);
+  letter-spacing: 0.02em;
+}
+
+/* --- buttons --- */
+
+.home__actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.66rem 1.35rem;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 140ms ease, background 140ms ease, border-color 140ms ease, opacity 140ms ease;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.btn:disabled {
+  opacity: 0.42;
+  cursor: default;
+}
+
+.btn--primary {
+  background: var(--accent);
+  color: #0d1117;
+}
+
+.btn--primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--accent) 84%, white);
+}
+
+.btn--ghost {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: var(--ink);
+}
+
+.btn--ghost:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* --- hint --- */
+
+.home__hint {
+  position: absolute;
+  right: clamp(1rem, 3vw, 2.2rem);
+  bottom: clamp(1rem, 3vw, 1.8rem);
+  margin: 0;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.42);
+  text-shadow: 0 1px 8px rgba(6, 12, 18, 0.7);
+}
+
+.home__hint kbd {
+  font: inherit;
+  padding: 0.05rem 0.32rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* --- narrow viewports: the island moves behind, not beside --- */
+
+@media (max-width: 720px) {
+  .home__panel {
+    width: auto;
+    margin: 0 1.4rem;
+  }
+  .home__scrim {
+    background: linear-gradient(
+      180deg,
+      rgba(10, 17, 24, 0.82) 0%,
+      rgba(10, 17, 24, 0.62) 55%,
+      rgba(10, 17, 24, 0.34) 100%
+    );
+  }
+  .home__hint { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home__panel { animation: none; }
+  .btn:hover, .swatch:hover, .swatch[data-selected] { transform: none; }
+}
+
+/* --- today ---------------------------------------------------------------- */
+
+/* One line about the day, between the title and the stats. It is the most
+   *useful* thing on the page and the quietest: no number is bold, nothing is
+   coloured, and "in the shallows" stands where "overdue" would. */
+.home__today {
+  margin: -0.2rem 0 1.6rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ink-dim);
+  max-width: 26rem;
+}
+
+/* --- season ring ---------------------------------------------------------- */
+
+.stats__value {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.stats__value .stats__sub {
+  flex-basis: 100%;
+}
+
+.stats__ring {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex: 0 0 auto;
+  transform: rotate(-90deg);
+}
+
+.stats__ring-track,
+.stats__ring-fill {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.stats__ring-track {
+  stroke: rgba(255, 255, 255, 0.16);
+}
+
+.stats__ring-fill {
+  stroke: var(--accent);
+  transition: stroke-dashoffset 900ms ease;
+}

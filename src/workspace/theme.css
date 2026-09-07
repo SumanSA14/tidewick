@@ -1,0 +1,309 @@
+/*
+ * The workspace, dressed.
+ *
+ * Loaded after editor.css and database.css and deliberately kept separate from
+ * them: those files are structure, this one is the visual language, and the
+ * two change for different reasons.
+ *
+ * The idea is simple and easy to lose: the two halves are one product. The
+ * island is warm toon terraces under a painted sky; a workspace that looks like
+ * a default dark IDE beside it is two apps in one window. So the paper here is
+ * warm rather than neutral, the dark mode is the island's own night palette
+ * rather than charcoal, the accent is the season's, and colour appears only
+ * where it carries information. Nothing pulses and nothing is red.
+ */
+
+/* --- tokens ---------------------------------------------------------------- */
+
+.workspace {
+  /* Warm paper by day. Pure white beside a green island reads as a spreadsheet. */
+  --paper: #f8f5ee;
+  --paper-2: #f1ede3;
+  --ink: #26313a;
+  --rule: color-mix(in srgb, var(--ink) 11%, transparent);
+  --muted: color-mix(in srgb, var(--ink) 56%, transparent);
+  --faint: color-mix(in srgb, var(--ink) 34%, transparent);
+  --accent-soft: color-mix(in srgb, var(--accent) 13%, transparent);
+  --accent-ink: color-mix(in srgb, var(--accent) 78%, var(--ink));
+  --shadow: 0 1px 2px rgba(20, 28, 34, 0.06), 0 8px 24px rgba(20, 28, 34, 0.06);
+  font-feature-settings: "cv11", "ss01";
+}
+
+@media (prefers-color-scheme: dark) {
+  .workspace {
+    /* The island's night sky, not charcoal: blue-black with a little warmth. */
+    --paper: #141a21;
+    --paper-2: #182028;
+    --ink: #e9e4d9;
+    --rule: color-mix(in srgb, var(--ink) 10%, transparent);
+    --muted: color-mix(in srgb, var(--ink) 58%, transparent);
+    --faint: color-mix(in srgb, var(--ink) 36%, transparent);
+    --accent-soft: color-mix(in srgb, var(--accent) 18%, transparent);
+    --accent-ink: color-mix(in srgb, var(--accent) 85%, white);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 30px rgba(0, 0, 0, 0.35);
+  }
+}
+
+/* --- shell ----------------------------------------------------------------- */
+
+.workspace {
+  background:
+    radial-gradient(120% 80% at 100% 0%, var(--accent-soft), transparent 55%),
+    var(--paper);
+}
+
+.sidebar {
+  background: color-mix(in srgb, var(--paper-2) 92%, var(--accent));
+  border-right: 1px solid var(--rule);
+  padding: 1rem 0.75rem 0.9rem;
+  gap: 0.25rem;
+}
+
+.sidebar__head {
+  padding: 0 0.35rem 0.9rem;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 0.4rem;
+}
+
+.sidebar__isle {
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* The mark beside the isle's name: the one place the island appears inside
+   the workspace, so you always know where "back" goes. */
+.sidebar__mark {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.sidebar__section {
+  margin: 1rem 0 0.25rem 0.55rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  color: var(--faint);
+}
+
+.sidebar__page,
+.sidebar__add,
+.sidebar__action {
+  border-radius: 7px;
+  padding: 0.38rem 0.6rem;
+  font-size: 0.85rem;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.sidebar__page.is-current {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-weight: 500;
+}
+
+.sidebar__action--isle {
+  margin-top: 0.4rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 9px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+.sidebar__action--isle:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+/* The search affordance: a quiet field-shaped button. The palette itself is
+   global; this is only the reminder that it exists. */
+.sidebar__search {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 0.6rem;
+  padding: 0.42rem 0.6rem;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--paper) 70%, transparent);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: border-color 120ms ease, color 120ms ease;
+}
+
+.sidebar__search:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--rule));
+  color: var(--ink);
+}
+
+.sidebar__search kbd {
+  font: inherit;
+  font-size: 0.66rem;
+  padding: 0.04rem 0.3rem;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  color: var(--faint);
+}
+
+/* --- editor ---------------------------------------------------------------- */
+
+.editor__title {
+  font-weight: 650;
+  letter-spacing: -0.028em;
+}
+
+.row__text {
+  line-height: 1.7;
+}
+
+.row--callout {
+  background: var(--accent-soft);
+  border-left: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  border-radius: 6px 10px 10px 6px;
+}
+
+.row--quote .row__text {
+  border-left-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.row--code .row__text {
+  background: color-mix(in srgb, var(--paper-2) 70%, var(--ink) 6%);
+  border: 1px solid var(--rule);
+}
+
+/* A completed task quiets rather than shouts: no strike-through. The isle
+   already celebrates it with a lantern; the page does not need to cross it out. */
+.row--done .row__text {
+  text-decoration: none;
+  color: var(--faint);
+}
+
+/* --- databases ------------------------------------------------------------- */
+
+.db__head {
+  padding-bottom: 0.6rem;
+}
+
+.db__name {
+  font-weight: 650;
+  letter-spacing: -0.025em;
+}
+
+.db__views {
+  gap: 0.1rem;
+}
+
+.db__tab {
+  border-radius: 7px 7px 0 0;
+  padding: 0.5rem 0.7rem;
+  transition: color 120ms ease, background 120ms ease;
+}
+
+.db__tab:hover {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+.db__tab.is-active,
+.db__tab[aria-selected="true"] {
+  color: var(--accent-ink);
+  border-bottom-color: var(--accent);
+}
+
+/* Table: quiet rules, a soft hover, and the header held apart from the rows. */
+.table__head {
+  background: color-mix(in srgb, var(--paper-2) 80%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+.table__row:hover,
+.table__row:focus-within {
+  background: var(--accent-soft);
+}
+
+.table__row + .table__row {
+  border-top-color: var(--rule);
+}
+
+/* Board and gallery cards lift a little: they are things you pick up. */
+.card,
+.gallery__card {
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--paper) 80%, var(--paper-2));
+  box-shadow: var(--shadow);
+  transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+}
+
+.card:hover,
+.gallery__card:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--rule));
+}
+
+.board__column {
+  background: color-mix(in srgb, var(--paper-2) 60%, transparent);
+  border-radius: 12px;
+}
+
+/* Chips: a touch more saturation and a hairline, so they read as labels rather
+   than as stains. */
+.chip {
+  border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+  font-weight: 500;
+  letter-spacing: 0.005em;
+}
+
+/* Panels (filter, sort, properties) sit on paper-2 with the shared shadow. */
+.panel {
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+/* Focus rings everywhere use the accent. Consistency here is what makes the
+   workspace feel like one surface rather than a set of widgets. */
+.workspace :is(button, input, select, textarea, [contenteditable], [tabindex]):focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 70%, transparent);
+  outline-offset: 2px;
+}
+
+/* --- scrollbars, gently --------------------------------------------------- */
+
+.workspace ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.workspace ::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--ink) 18%, transparent);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.workspace ::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--ink) 30%, transparent);
+  background-clip: padding-box;
+}
+
+.workspace ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* --- motion ---------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .workspace *,
+  .workspace *::before,
+  .workspace *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

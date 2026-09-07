@@ -1,0 +1,125 @@
+/*
+ * The Keeper's chrome.
+ *
+ * Deliberately sparse. This is a calm product, and a walking sim covered in
+ * HUD is a different one - so there is a toggle, a fading control hint, and
+ * one line of prompt. Everything sits over a live 3D scene, so every surface
+ * is a translucent slab with a blur behind it rather than a solid panel.
+ */
+
+.keeper-toggle {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.1rem;
+  padding: 0.5rem 0.85rem;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.82rem;
+  letter-spacing: 0.01em;
+  color: rgba(244, 241, 234, 0.92);
+  background: rgba(20, 28, 34, 0.72);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.keeper-toggle:hover {
+  background: rgba(20, 28, 34, 0.88);
+  transform: translateY(-1px);
+}
+
+.keeper-toggle:focus-visible {
+  outline: 2px solid var(--hud-good);
+  outline-offset: 2px;
+}
+
+.keeper-toggle--on {
+  color: #14201f;
+  background: var(--hud-good);
+}
+
+.keeper-toggle kbd,
+.keeper-controls kbd,
+.keeper-prompt kbd {
+  font: inherit;
+  font-size: 0.7rem;
+  margin-left: 0.35rem;
+  padding: 0.02rem 0.32rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.keeper-toggle--on kbd {
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.keeper-controls kbd {
+  margin: 0 0.1rem;
+}
+
+.keeper-controls {
+  position: absolute;
+  left: 50%;
+  bottom: 1.05rem;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1.1rem;
+  padding: 0.42rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  white-space: nowrap;
+  color: rgba(244, 241, 234, 0.62);
+  background: rgba(20, 28, 34, 0.5);
+  backdrop-filter: blur(8px);
+  /* Reads once, then gets out of the way. */
+  animation: keeper-hint-fade 900ms ease 7s forwards;
+}
+
+@keyframes keeper-hint-fade {
+  to { opacity: 0.22; }
+}
+
+.keeper-controls:hover {
+  opacity: 1;
+  animation: none;
+}
+
+/*
+ * The prompt sits just under the centre of the screen, which is where the
+ * Keeper's hands are with the default camera - close enough to the thing being
+ * acted on to connect the two without covering it.
+ */
+.keeper-prompt {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  /* Reserved whether or not there is a prompt, so nothing below it shifts. */
+  min-height: 2rem;
+}
+
+.keeper-prompt__body {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.36rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  color: rgba(248, 246, 240, 0.95);
+  background: rgba(20, 28, 34, 0.62);
+  backdrop-filter: blur(10px);
+  animation: keeper-prompt-in 140ms ease;
+}
+
+.keeper-prompt__body kbd {
+  margin: 0 0.4rem 0 0;
+}
+
+@keyframes keeper-prompt-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
